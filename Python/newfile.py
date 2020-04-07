@@ -1,6 +1,6 @@
-import os
-import sys
-import shutil
+import os, sys, shutil, stat
+from subprocess import run
+
 # Programa para la creación de archivos .py, .sh, .src. 
 
 # Pedimos el nombre del archivo. Este nombre tiene que tener su extensión es decir .py, .sh, etc.
@@ -24,7 +24,7 @@ def guardar_archivo():
         else:
             file = open(nombre, 'w')                # Si existe la ruta creamos el archivo.
             file.close()
-            shutil.move(nombre, directorio_python) # y por ultimo lo movemos al directorio correspondiente.
+            shutil.move(nombre, directorio_python)  # y por ultimo lo movemos al directorio correspondiente.
             exit()
     elif nombre.endswith('.sh'):
         directorio_script = os.path.abspath('/home/alejandro/Documentos/script')
@@ -32,11 +32,13 @@ def guardar_archivo():
             os.mkdir(directorio_script)
             file = open(nombre, 'w') 
             file.close()
+            os.chmod(nombre, stat.S_IXUSR+stat.S_IRUSR+stat.S_IWUSR) # Damos permiso de administrador.
             shutil.move(nombre, directorio_script)
             exit()
         else:
             file = open(nombre, 'w') 
             file.close()
+            os.chmod(nombre, stat.S_IXUSR+stat.S_IRUSR+stat.S_IWUSR)
             shutil.move(nombre, directorio_script)
             exit()
     elif nombre.endswith('.src'):
@@ -55,6 +57,40 @@ def guardar_archivo():
     else:
         sys.exit('Por favor, introduzca solo archivos .py, .sh o .src') # Si por casualida el archivo introducido no coincide con 
                                                                         # ningún tipo mandará un error y se saldrá de la ejecución.
+
+
+##############################################################################################################################################
+
+print ('Elige un editor:')
+print ('[1] Vim')
+print ('[2] Code Visual Studio')
+print ('[3] Nano')
+
+opcion = int(input ('¿Que editor deseas usar? '))
+
+def elegir_editor():
+# Mostraremos un menú donde podremos elegir un editor con un número.
+    if opcion == 1:
+        #editor1 = os.environ.get('editor1', 'vim')
+        run(['vim'])
+        exit()
+    elif opcion == 2:
+        #editor2 = os.environ.get('editor2', 'code --user-data-dir')
+        run(['code', '--user-data-dir'])
+        exit()
+    elif opcion == 3:
+        #editor3 = os.environ.get('editor3', 'nano')
+        run(['nano'])
+        exit()
+    else:
+        print ('El editor elegido no existe...')
+   
+
+
+
 guardar_archivo()
+elegir_editor()
+
+
         
     
