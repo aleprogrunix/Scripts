@@ -1,5 +1,5 @@
 import os, sys, shutil, stat
-from subprocess import run
+import subprocess as sp
 
 # Programa para la creación de archivos .py, .sh, .src. 
 
@@ -10,6 +10,8 @@ nombre = input ('Introduzca el nombre del archivo. Recuerda que este debe llevar
 # Introducido el nombre con su extensión, lo primero que debemos hacer es guardarlo en su directorio correspondiente.
 # Tenemos tres directorio uno para los archivos .py. otro para los archivos .sh y el último para los archivos .src.
 
+guardado = []
+
 def guardar_archivo():
     # Para guardar los archivos en su directorio lo prmiero que tenemos que hacer es sacar su extensión. 
     # Para ello utilizo la función endswith.
@@ -18,14 +20,14 @@ def guardar_archivo():
         if not os.path.abspath(directorio_python):  # si no existe esta ruta la creo
             os.mkdir(directorio_python)             # creamos la ruta y guardamos el archivo en el.
             file = open(nombre, 'w')                # Guardamos el archivo
-            file.close()
-            shutil.move(nombre, directorio_python)
-            exit()
+            file.close()                            # Cerramos el archivo
+            guardado.append(shutil.move(nombre, directorio_python))  # Lo movemos a su carpeta correspondiente
+            
         else:
             file = open(nombre, 'w')                # Si existe la ruta creamos el archivo.
             file.close()
-            shutil.move(nombre, directorio_python)  # y por ultimo lo movemos al directorio correspondiente.
-            exit()
+            guardado.append(shutil.move(nombre, directorio_python))  # y por ultimo lo movemos al directorio correspondiente.
+            
     elif nombre.endswith('.sh'):
         directorio_script = os.path.abspath('/home/alejandro/Documentos/script')
         if not os.path.abspath(directorio_script):
@@ -33,31 +35,39 @@ def guardar_archivo():
             file = open(nombre, 'w') 
             file.close()
             os.chmod(nombre, stat.S_IXUSR+stat.S_IRUSR+stat.S_IWUSR) # Damos permiso de administrador.
-            shutil.move(nombre, directorio_script)
-            exit()
+            guardado.append(shutil.move(nombre, directorio_script))
+            
         else:
             file = open(nombre, 'w') 
             file.close()
             os.chmod(nombre, stat.S_IXUSR+stat.S_IRUSR+stat.S_IWUSR)
-            shutil.move(nombre, directorio_script)
-            exit()
+            guardado.append(shutil.move(nombre, directorio_script))
+            
     elif nombre.endswith('.src'):
         directorio_mikrotik = os.path.abspath('/home/alejandro/Documentos/mikrotik')
         if not os.path.abspath(directorio_mikrotik):
             os.mkdir(directorio_mikrotik)
             file = open(nombre, 'w') 
             file.close()
-            shutil.move(nombre, directorio_mikrotik)
-            exit()
+            guardado.append(shutil.move(nombre, directorio_mikrotik))
+            
         else:
             file = open(nombre, 'w') 
             file.close()
-            shutil.move(nombre, directorio_mikrotik)
-            exit()
+            guardado.append(shutil.move(nombre, directorio_mikrotik))
+            
     else:
         sys.exit('Por favor, introduzca solo archivos .py, .sh o .src') # Si por casualida el archivo introducido no coincide con 
                                                                         # ningún tipo mandará un error y se saldrá de la ejecución.
+        
 
+guardar_archivo()
+
+# la lista creada al principio para almacenar la ruta del nuevo archivo creado
+for i in guardado:
+   ruta_archivo_nuevo =  (i)
+
+print (ruta_archivo_nuevo)
 
 ##############################################################################################################################################
 
@@ -71,24 +81,17 @@ opcion = int(input ('¿Que editor deseas usar? '))
 def elegir_editor():
 # Mostraremos un menú donde podremos elegir un editor con un número.
     if opcion == 1:
-        #editor1 = os.environ.get('editor1', 'vim')
-        run(['vim'])
+        sp.call(['vim', ruta_archivo_nuevo])
         exit()
     elif opcion == 2:
-        #editor2 = os.environ.get('editor2', 'code --user-data-dir')
-        run(['code', '--user-data-dir'])
+        sp.call(['code', ruta_archivo_nuevo, ' --user-data-dir'])
         exit()
     elif opcion == 3:
-        #editor3 = os.environ.get('editor3', 'nano')
-        run(['nano'])
+        sp.call(['nano', ruta_archivo_nuevo])
         exit()
     else:
         print ('El editor elegido no existe...')
    
-
-
-
-guardar_archivo()
 elegir_editor()
 
 
