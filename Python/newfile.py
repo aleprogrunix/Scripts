@@ -63,7 +63,7 @@ def guardar_archivo():
 
 guardar_archivo()
 
-# la lista creada al principio para almacenar la ruta del nuevo archivo creado
+# Con este bucle sacamos la ruta de la lista. Así podemos elegir la ruta a convenir.
 for i in guardado:
    ruta_archivo_nuevo =  (i)
 
